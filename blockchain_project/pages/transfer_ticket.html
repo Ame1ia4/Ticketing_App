@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- REQUIRED ORDER -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/web3_init.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/site.css">
+    <link rel="stylesheet" href="../assets/css/transfer_ticket.css">
+
+    <title>Transfer Ticket — Block 8 Ticketing</title>
+</head>
+
+<body>
+<nav class="site-nav" aria-label="Main">
+    <a class="brand" href="../index.html">Blockchain Technologies &amp; Applications · Block 8</a>
+    <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="create_wallet.html">Create Wallet</a>
+        <a href="check_balance.html">Check Balance</a>
+        <a href="buy_ticket.html">Buy Ticket</a>
+        <a href="transfer_ticket.html">Transfer to Vendor</a>
+    </div>
+</nav>
+
+<main class="site-main">
+<h1>Transfer Ticket</h1>
+
+<input type="file" id="keystoreFile"><br/><br/>
+<input type="password" id="password" placeholder="Password"><br/><br/>
+
+<button id="loadWalletButton">Load Wallet</button><br/><br/>
+
+<input type="text" id="walletAddress" placeholder="Wallet Address"><br/><br/>
+<textarea id="privateKey" placeholder="Private Key"></textarea><br/><br/>
+
+<button id="transferButton">Transfer Ticket</button>
+
+<div id="errorModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <p id="errorMessage"></p>
+    </div>
+</div>
+
+<script src="../assets/js/transfer_ticket.js"></script>
+</main>
+</body>
+</html>

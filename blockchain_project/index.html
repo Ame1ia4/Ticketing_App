@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block 8 — Ticketing DApp (Sepolia)</title>
+    <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+    <nav class="site-nav" aria-label="Main">
+        <a class="brand" href="index.html">Blockchain Technologies &amp; Applications · Block 8</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="pages/create_wallet.html">Create Wallet</a>
+            <a href="pages/check_balance.html">Check Balance</a>
+            <a href="pages/buy_ticket.html">Buy Ticket</a>
+            <a href="pages/transfer_ticket.html">Transfer to Vendor</a>
+        </div>
+    </nav>
+
+    <main class="site-main">
+        <section class="home-hero">
+            <h1>Event ticketing on Sepolia</h1>
+            <p>
+                Simple Web3 DApp: create a wallet, check Sepolia ETH and ticket (ERC-20) balances for attendees,
+                doormen, and venue staff, purchase tickets with native test ETH, and transfer tickets back to the vendor.
+            </p>
+        </section>
+
+        <h2 style="color:#0d4d2d;margin-bottom:1rem;">Go to a page</h2>
+        <div class="home-cards">
+            <a class="home-card" href="pages/create_wallet.html">
+                Create wallet
+                <span>Generate keys, view address, download keystore JSON.</span>
+            </a>
+            <a class="home-card" href="pages/check_balance.html">
+                Check balance
+                <span>Crypto (ETH) and ticket token balance for any address.</span>
+            </a>
+            <a class="home-card" href="pages/buy_ticket.html">
+                Buy ticket
+                <span>Load wallet and send a payable transaction to the contract.</span>
+            </a>
+            <a class="home-card" href="pages/transfer_ticket.html">
+                Transfer to vendor
+                <span>Return ticket tokens to the vendor wallet.</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        Sepolia testnet · Update contract address in <code>assets/js/config.js</code> after deployment.
+    </footer>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include the Web3 library -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <!-- Include the jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Include your CSS file -->
+     <!-- REQUIRED ORDER -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/web3_init.js"></script>
+
+    <link rel="stylesheet" href="./createWallet.css">
+    <title>Create a wallet</title>
+
+</head>
+<body>
+        <h1>Create a Wallet</h1>
+        <button id="createWalletButton">Create Wallet</button>
+        <!-- Ask for a wallet password -->
+        <input type="password" id="password" placeholder="Enter a password for the Key Store">
+        <br/>
+        <br/>
+
+        <label for="walletAddress">Wallet Address:</label>
+        <br/>
+        <textarea id="walletAddress" rows="5" cols="50"></textarea>
+        <br/>
+        <label for="privateKey">Private Key:</label>
+        <br/>
+        <textarea id="privateKey" rows="5" cols="50"></textarea>
+        <br/>
+        <label for="keystore">Keystore File:</label>
+        <br/>
+        <textarea id="keystore" rows="5" cols="50"></textarea>
+    
+        <br/>
+        <br/>
+        <!-- Download the keystore as a file {wallet}.json -->
+        <a class="btn" id="downloadKeystore" download="wallet.json">Download Keystore</a>
+</body>
+<script src="../assets/js/create_wallet.js"></script>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- REQUIRED ORDER -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/web3_init.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/site.css">
+    <link rel="stylesheet" href="../assets/css/check_balance.css">
+
+    <title>Check Balance — Block 8 Ticketing</title>
+</head>
+
+<body>
+<nav class="site-nav" aria-label="Main">
+    <a class="brand" href="../index.html">Blockchain Technologies &amp; Applications · Block 8</a>
+    <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="create_wallet.html">Create Wallet</a>
+        <a href="check_balance.html">Check Balance</a>
+        <a href="buy_ticket.html">Buy Ticket</a>
+        <a href="transfer_ticket.html">Transfer to Vendor</a>
+    </div>
+</nav>
+
+<main class="site-main">
+<h1>Check Balance</h1>
+
+<label>Enter your wallet address:</label>
+<input type="text" id="walletAddress">
+<br/><br/>
+
+<button id="cryptoBalanceButton">Check Crypto Balance</button>
+<br/><br/>
+
+<label id="cryptoBalance">Crypto Balance:</label>
+<br/><br/>
+
+<label>Ticket token contract address:</label>
+<input type="text" id="tokenAddress" placeholder="Defaults from config.js">
+<br/>
+
+<button id="tokenBalanceButton">Check Token Balance</button>
+<br/><br/>
+
+<label id="tokenBalance">Token Balance:</label><br/>
+<label id="tokenName">Token Name:</label><br/>
+<label id="tokenSymbol">Token Symbol:</label><br/>
+<label id="tokenDecimals">Token Decimals:</label><br/>
+<label id="tokenTotalSupply">Token Total Supply:</label><br/><br/>
+
+<p><a href="transfer_ticket.html">Go to transfer ticket to vendor →</a></p>
+
+<div id="errorModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <p id="errorMessage"></p>
+    </div>
+</div>
+
+<script src="../assets/js/check_balance.js"></script>
+</main>
+</body>
+</html>
