@@ -12,11 +12,24 @@
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/web3_init.js"></script>
 
-    <link rel="stylesheet" href="./createWallet.css">
+    <link rel="stylesheet" href="../assets/css/site.css">
+    <link rel="stylesheet" href="../assets/css/create_wallet.css">
     <title>Create a wallet</title>
 
 </head>
 <body>
+        <nav class="site-nav" aria-label="Main">
+            <a class="brand" href="../index.html">Blockchain Technologies &amp; Applications · Block 8</a>
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="create_wallet.html">Create Wallet</a>
+                <a href="check_balance.html">Check Balance</a>
+                <a href="buy_ticket.html">Buy Ticket</a>
+                <a href="transfer_ticket.html">Transfer to Vendor</a>
+            </div>
+        </nav>
+
+        <main class="site-main">
         <h1>Create a Wallet</h1>
         <button id="createWalletButton">Create Wallet</button>
         <!-- Ask for a wallet password -->
@@ -40,6 +53,8 @@
         <br/>
         <!-- Download the keystore as a file {wallet}.json -->
         <a class="btn" id="downloadKeystore" download="wallet.json">Download Keystore</a>
+
+</main>
 </body>
 <script src="../assets/js/create_wallet.js"></script>
 </html>
