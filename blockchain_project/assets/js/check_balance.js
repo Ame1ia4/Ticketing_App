@@ -1,10 +1,27 @@
-// Handles check-balance.html — works for attendee, doorman, and venue
+// ─────────────────────────────────────────────────────────────────────────────
+// check_balance.js — handles check-balance.html for attendee, doorman, venue.
+//
+// Changes from review:
+//
+// No critical or warning-level issues in the original. Minor improvements:
+//
+// [USABILITY-1] ETH balance is formatted to 6 decimal places to avoid
+//               scientific notation on very small balances.
+//
+// [USABILITY-2] Token balance section is cleared on each new query so stale
+//               results from a previous address don't persist if the new query
+//               fails.
+//
+// [DEFENSIVE-1] Both catch() handlers now use showModal() (consistent with
+//               other pages) rather than directly manipulating #errorModal.
+// ─────────────────────────────────────────────────────────────────────────────
+
 function formatTokenAmount(rawBalance, decimals) {
-    const x = BigInt(rawBalance);
-    const d = BigInt(decimals);
+    const x     = BigInt(rawBalance);
+    const d     = BigInt(decimals);
     const denom = 10n ** d;
     const whole = x / denom;
-    const frac = (x % denom).toString().padStart(Number(decimals), "0").replace(/0+$/, "");
+    const frac  = (x % denom).toString().padStart(Number(decimals), "0").replace(/0+$/, "");
     return frac.length ? whole.toString() + "." + frac : whole.toString();
 }
 
@@ -13,34 +30,40 @@ $(document).ready(function () {
         $("#tokenAddress").val(CONFIG.CONTRACT_ADDRESS);
     }
 
+    // ── ETH Balance ───────────────────────────────────────────────────────────
+
     $("#cryptoBalanceButton").click(function () {
         const walletAddress = $("#walletAddress").val().trim();
 
-        if (web3.utils.isAddress(walletAddress)) {
-            web3.eth.getBalance(walletAddress)
-                .then(function (balance) {
-                    const eth = web3.utils.fromWei(balance, "ether");
-                    $("#cryptoBalance").html("<strong>Crypto Balance: " + eth + " ETH</strong>");
-                })
-                .catch(function (err) {
-                    $("#errorMessage").text(err.message || String(err));
-                    $("#errorModal").show();
-                });
-        } else {
-            $("#errorMessage").text("Invalid wallet address");
-            $("#errorModal").show();
+        if (!web3.utils.isAddress(walletAddress)) {
+            showModal("Invalid wallet address");
+            return;
         }
+
+        web3.eth.getBalance(walletAddress)
+            .then(function (balance) {
+                // [USABILITY-1] toFixed(6) avoids scientific notation.
+                const eth = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(6);
+                $("#cryptoBalance").html("<strong>Crypto Balance: " + eth + " ETH</strong>");
+            })
+            .catch(function (err) {
+                showModal(err.message || String(err));
+            });
     });
+
+    // ── Token Balance ─────────────────────────────────────────────────────────
 
     $("#tokenBalanceButton").click(function () {
         const walletAddress = $("#walletAddress").val().trim();
-        const tokenAddress = $("#tokenAddress").val().trim();
+        const tokenAddress  = $("#tokenAddress").val().trim();
 
         if (!web3.utils.isAddress(walletAddress) || !web3.utils.isAddress(tokenAddress)) {
-            $("#errorMessage").text("Invalid wallet or token contract address");
-            $("#errorModal").show();
+            showModal("Invalid wallet or token contract address");
             return;
         }
+
+        // [USABILITY-2] Clear previous results so stale data doesn't persist.
+        $("#tokenBalance, #tokenName, #tokenSymbol, #tokenDecimals, #tokenTotalSupply").text("");
 
         const token = new web3.eth.Contract(CONTRACT_ABI, tokenAddress);
 
@@ -51,12 +74,7 @@ $(document).ready(function () {
             token.methods.symbol().call(),
             token.methods.totalSupply().call(),
         ])
-            .then(function (results) {
-                const balance = results[0];
-                const decimals = results[1];
-                const name = results[2];
-                const symbol = results[3];
-                const totalSupply = results[4];
+            .then(function ([balance, decimals, name, symbol, totalSupply]) {
                 const formatted = formatTokenAmount(balance, decimals);
                 $("#tokenBalance").html(
                     "<strong>Token Balance: " + formatted + " " + symbol + "</strong> (raw: " + balance + ")"
@@ -65,14 +83,15 @@ $(document).ready(function () {
                 $("#tokenSymbol").text("Token Symbol: " + symbol);
                 $("#tokenDecimals").text("Token Decimals: " + decimals);
                 $("#tokenTotalSupply").text(
-                    "Token Total Supply: " + formatTokenAmount(totalSupply, decimals) + " (raw: " + totalSupply + ")"
+                    "Token Total Supply: " +
+                    formatTokenAmount(totalSupply, decimals) +
+                    " (raw: " + totalSupply + ")"
                 );
             })
             .catch(function (err) {
-                $("#errorMessage").text(err.message || String(err));
-                $("#errorModal").show();
+                showModal(err.message || String(err));
             });
     });
 
-    $("#closeModal").click(() => $("#errorModal").hide());
+    $("#closeModal").click(() => hideModal());
 });

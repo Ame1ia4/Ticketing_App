@@ -1,31 +1,72 @@
-<!-- 
-    This HTML file is used to create a web page for decrypting a wallet.
-    It includes the necessary libraries (Web3 and jQuery) and a CSS file.
-    The page contains input fields for entering a password and selecting a wallet JSON file.
-    After clicking the "Decrypt Wallet" button, the script uses the Web3 library to decrypt the wallet using the provided password and the selected file.
-    The decrypted wallet address, private key, and keystore are then displayed in the respective textareas.
--->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Include the Web3 library -->
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-    <!-- Include the jQuery library -->
+
+    <!-- CSP -->
+    <meta http-equiv="Content-Security-Policy"
+          content="
+            default-src 'self';
+
+            script-src
+                'self'
+                'unsafe-inline'
+                https://cdn.jsdelivr.net
+                https://ajax.googleapis.com;
+
+            style-src
+                'self'
+                'unsafe-inline'
+                https://fonts.googleapis.com;
+
+            font-src
+                'self'
+                https://fonts.gstatic.com
+                data:;
+
+            connect-src
+                'self'
+                https://sepolia.infura.io
+                http://localhost:*
+                ws://localhost:*
+                http://127.0.0.1:*;
+
+            img-src 'self' data:;
+
+            object-src 'none';
+
+            base-uri 'self';
+          ">
+
+    <!-- jQuery FIRST -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- REQUIRED ORDER -->
+
+    <!-- Web3 SECOND -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+    <!-- App config -->
     <script src="../assets/js/config.js"></script>
+
+    <!-- Shared init -->
     <script src="../assets/js/web3_init.js"></script>
 
+    <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/site.css">
     <link rel="stylesheet" href="../assets/css/buy_ticket.css">
-    <title>Buy Ticket — Block 8 Ticketing</title>
 
+    <title>Buy Ticket — Block 8 Ticketing</title>
 </head>
+
 <body>
+
 <nav class="site-nav" aria-label="Main">
-    <a class="brand" href="../index.html">Blockchain Technologies &amp; Applications · Block 8</a>
+
+    <a class="brand" href="../index.html">
+        Blockchain Technologies &amp; Applications · Block 8
+    </a>
+
     <div class="nav-links">
         <a href="../index.html">Home</a>
         <a href="create_wallet.html">Create Wallet</a>
@@ -33,70 +74,129 @@
         <a href="buy_ticket.html">Buy Ticket</a>
         <a href="transfer_ticket.html">Transfer to Vendor</a>
     </div>
+
 </nav>
 
 <main class="site-main">
-        <h1>Load Wallet and Buy a Ticket</h1>
-        <button id="loadWalletButton">Load Wallet</button>
-        <!-- Ask for a wallet password -->
-        <input type="password" id="password" placeholder="Enter a password for the Key Store">
-        <!-- Select a wallet json file from the file system -->
-        <input type="file" id="keystoreFile" accept=".json">
-        <br/>
-        <br/>
 
-        <label for="walletAddress">Wallet Address:</label>
-        <br/>
-        <textarea id="walletAddress" rows="5" cols="50"></textarea>
-        <br/>
-        <label for="privateKey">Private Key:</label>
-        <br/>
-        <textarea id="privateKey" rows="5" cols="50"></textarea>
-        <br/>
-        <label for="keystore">Keystore File:</label>
-        <br/>
-        <textarea id="keystore" rows="5" cols="50"></textarea>
-    
-        <br/>
-        <br/>
-        <h3>Buy tokens from contract <a id="contractEtherscanLink" href="#" target="_blank" rel="noopener">(Sepolia)</a></h3>
-        <br/>
-        <button id="buyTokensButton">Buy Tokens</button>
-        <!-- Enter the amount to pay -->
-        <input id="amountToPay" type="number" placeholder="Enter the amount to pay (ETH)">
-        <br/>
+    <h1>Load Wallet and Buy a Ticket</h1>
 
-        <!-- Put the transaction request details here -->
-        <label for="transactionRequest">Transaction Request: </label>
-        <textarea id="transactionRequest" rows="5" cols="50"></textarea>
-        <br/>
-        <!-- Put the transaction result details here -->
-        <label for="transactionResult">Transaction Result: </label>
-        <textarea id="transactionResult" rows="5" cols="50"></textarea>
+    <button id="loadWalletButton">
+        Load Wallet
+    </button>
 
-        <br/>
-        <br/>
-        <br/>
+    <input
+        type="password"
+        id="password"
+        placeholder="Enter wallet password"
+        autocomplete="off">
 
+    <input
+        type="file"
+        id="keystoreFile"
+        accept=".json,application/json">
 
-        <!-- Error Modal -->
-        <div id="errorModal" class="modal">
-            <div class="modal-content">
-                <span id="closeModal" class="close">&times;</span>
-                <p id="errorMessage"></p>
-            </div>
+    <br><br>
+
+    <label for="walletAddress">
+        Wallet Address:
+    </label>
+
+    <br>
+
+    <textarea
+        id="walletAddress"
+        rows="3"
+        cols="50"
+        readonly></textarea>
+
+    <br>
+
+    <label for="keystore">
+        Keystore File:
+    </label>
+
+    <br>
+
+    <textarea
+        id="keystore"
+        rows="5"
+        cols="50"
+        readonly></textarea>
+
+    <br><br>
+
+    <h3>
+        Buy tokens from contract
+
+        <a
+            id="contractEtherscanLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer">
+
+            (Sepolia)
+
+        </a>
+    </h3>
+
+    <br>
+
+    <button id="buyTokensButton">
+        Buy Tokens
+    </button>
+
+    <input
+        id="amountToPay"
+        type="number"
+        step="0.000001"
+        min="0"
+        placeholder="Enter ETH amount">
+
+    <br><br>
+
+    <label for="transactionRequest">
+        Transaction Request:
+    </label>
+
+    <textarea
+        id="transactionRequest"
+        rows="5"
+        cols="50"
+        readonly></textarea>
+
+    <br>
+
+    <label for="transactionResult">
+        Transaction Result:
+    </label>
+
+    <textarea
+        id="transactionResult"
+        rows="5"
+        cols="50"
+        readonly></textarea>
+
+    <!-- Shared modal -->
+    <div id="errorModal" class="modal">
+
+        <div class="modal-content">
+
+            <span id="closeModal" class="close">
+                &times;
+            </span>
+
+            <p id="errorMessage"></p>
+
         </div>
+
+    </div>
+
 </main>
+
+<!-- Page logic LAST -->
 <script src="../assets/js/buy_ticket.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (typeof CONFIG !== "undefined" && CONFIG.CONTRACT_ADDRESS) {
-            var a = document.getElementById("contractEtherscanLink");
-            var addr = CONFIG.CONTRACT_ADDRESS;
-            a.href = "https://sepolia.etherscan.io/address/" + addr;
-            a.textContent = addr;
-        }
-    });
-</script>
+
 </body>
 </html>
+
