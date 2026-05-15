@@ -1,0 +1,22 @@
+# --- Foundry/Solidity Artifacts ---
+out/
+cache/
+lib/
+broadcast/
+sync/
+anvil-state.json
+
+# --- Dependencies ---
+node_modules/
+package-lock.json
+
+# --- Testing & Coverage ---
+coverage/
+coverage-report/
+htmlcov/
+frontend_tests/coverage/
+
+# --- Environment & OS ---
+.env
+.DS_Store
+Thumbs.db

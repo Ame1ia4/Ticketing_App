@@ -1,67 +1,72 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// transfer_ticket.js — handles the "Transfer Ticket to Vendor" page.
+//
+// Changes from review:
+//
+// [SEC-CRIT-2] Private key is NEVER written to the DOM. The wallet returned by
+//              loadWalletFromKeystore() is held in the _wallet closure variable
+//              and nulled immediately before signAndSend() is invoked.
+//
+// [SUGGEST-1]  onHash callback used to show the tx hash / Etherscan link as soon
+//              as the transaction is broadcast.
+//
+// All other improvements (estimateGas, nonce, error handling) are in
+// web3_init.js and apply automatically.
+// ─────────────────────────────────────────────────────────────────────────────
+
 $(document).ready(function () {
     const contract = getContract();
 
-    $("#loadWalletButton").click(function(){
+    // [SEC-CRIT-2] Wallet lives here in a JS closure — never in the DOM.
+    let _wallet = null;
 
-        if ($("#password").val() == ""){
-            showModal("Please enter a password");
-            return;
-        }
+    // ── Load Wallet ───────────────────────────────────────────────────────────
 
-        var file = $("#keystoreFile")[0].files[0];
-        if (!file){
-            showModal("Please select a file");
-            return;
-        }
+    $("#loadWalletButton").click(function () {
+        loadWalletFromKeystore("#keystoreFile", "#password", function (wallet) {
+            _wallet = wallet;
 
-        var reader = new FileReader();
-        reader.onload = function(e){
-            var keystore = e.target.result;
-            var password = $("#password").val();
+            // Show the public address only — private key stays out of the DOM.
+            $("#walletAddress").val(wallet.address);
 
-            try {
-                var wallet = web3.eth.accounts.decrypt(keystore, password);
-                $("#walletAddress").val(wallet.address);
-                $("#privateKey").val(wallet.privateKey);
-                $("#keystore").val(keystore);
-            } catch (error) {
-                showModal(error.message);
-            }
-        };
-        reader.readAsText(file);
+            showModal("Wallet loaded successfully. Address: " + wallet.address);
+        });
     });
 
-    $("#transferButton").click(function(){
+    // ── Transfer Ticket ───────────────────────────────────────────────────────
 
-        var privateKey = $("#privateKey").val();
-
-        if (privateKey == ""){
-            showModal("Please enter a private key");
+    $("#transferButton").click(function () {
+        if (!_wallet) {
+            showModal("Please load a wallet first");
             return;
         }
 
-        var wallet = web3.eth.accounts.privateKeyToAccount(privateKey);
-
-        var transaction = contract.methods.transferBack();
-        var encodedABI = transaction.encodeABI();
-
         var tx = {
-            from: wallet.address,
-            to: CONFIG.CONTRACT_ADDRESS,
-            gas: 2000000,
-            data: encodedABI
+            from: _wallet.address,
+            to:   CONFIG.CONTRACT_ADDRESS,
+            // gas and nonce are set dynamically inside signAndSend()
+            data: contract.methods.transferBack().encodeABI()
         };
 
-        showModal("Transaction in progress. This could take ~30s");
+        // Extract private key and immediately null _wallet so the sensitive
+        // material is out of the closure scope as early as possible.
+        const privateKey = _wallet.privateKey;
+        _wallet = null; // [SEC-CRIT-2] Discard before async work begins.
 
-        web3.eth.accounts.signTransaction(tx, privateKey)
-        .then(function(signedTx){
-            web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-            .on('receipt', function(receipt){
-                $("#transactionRequest").val(JSON.stringify(tx));
-                $("#transactionResult").val(JSON.stringify(receipt));
-                showModal("Transfer successful");
-            });
-        });
+        signAndSend(
+            tx,
+            privateKey,
+            // onSuccess — receipt confirmed
+            function (tx, receipt) {
+                $("#transactionRequest").val("");
+                $("#transactionResult").val(JSON.stringify(receipt, null, 2));
+                $("#walletAddress").val(""); // Clear public address
+                showModal("Transfer successful! Your ticket has been returned to the vendor.");
+            },
+            // [SUGGEST-1] onHash — update UI immediately after broadcast
+            function (hash) {
+                $("#transactionRequest").val(hash);
+            }
+        );
     });
 });
